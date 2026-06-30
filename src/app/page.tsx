@@ -4,6 +4,7 @@ import { SectionAnchor } from '@/components/layout/SectionAnchor'
 import { AiSummarySection } from '@/components/sections/AiSummarySection'
 import { MacroSection } from '@/components/sections/MacroSection'
 import { UsMarketSection } from '@/components/sections/UsMarketSection'
+import { PlaceholderSection } from '@/components/sections/PlaceholderSection'
 import { useMacroData } from '@/hooks/useMacroData'
 import { useUsMarket } from '@/hooks/useUsMarket'
 
@@ -14,29 +15,64 @@ export default function Home() {
   return (
     <div>
       <SectionAnchor id="ai-summary" className="bg-gray-50 dark:bg-navy/30">
-        <AiSummarySection
-          getMacroData={() => macroData}
-          getUsMarketData={() => usMarketData}
-        />
+        <AiSummarySection getMacroData={() => macroData} getUsMarketData={() => usMarketData} />
       </SectionAnchor>
+
       <SectionAnchor id="macro" className="bg-white dark:bg-navy/50">
         <MacroSection />
       </SectionAnchor>
+
       <SectionAnchor id="us-market" className="bg-gray-50 dark:bg-navy/30">
         <UsMarketSection />
       </SectionAnchor>
-      <SectionAnchor id="real-estate">
-        <p className="text-gray-400">부동산 섹션 — 구현 예정</p>
+
+      <SectionAnchor id="real-estate" className="bg-white dark:bg-navy/50">
+        <PlaceholderSection
+          title="부동산"
+          emoji="🏠"
+          items={[
+            { label: '청약 정보' }, { label: '전세가율' },
+            { label: '미분양 현황' }, { label: '경매 지수' },
+          ]}
+        />
       </SectionAnchor>
-      <SectionAnchor id="kr-stock">
-        <p className="text-gray-400">한국 주식 섹션 — 구현 예정</p>
+
+      <SectionAnchor id="kr-stock" className="bg-gray-50 dark:bg-navy/30">
+        <PlaceholderSection
+          title="한국주식"
+          emoji="🇰🇷"
+          items={[
+            { label: 'KOSPI' }, { label: 'KOSDAQ' },
+            { label: '섹터별 순위' }, { label: '외국인 수급' },
+          ]}
+        />
       </SectionAnchor>
-      <SectionAnchor id="alternative">
-        <p className="text-gray-400">대안투자 섹션 — 구현 예정</p>
+
+      <SectionAnchor id="alternative" className="bg-white dark:bg-navy/50">
+        <PlaceholderSection
+          title="대안투자"
+          emoji="💎"
+          items={[
+            { label: '금 가격' }, { label: '비트코인' },
+            { label: '원자재' }, { label: '환율 DXY' },
+          ]}
+        />
       </SectionAnchor>
-      <SectionAnchor id="news">
-        <p className="text-gray-400">뉴스 섹션 — 구현 예정</p>
+
+      <SectionAnchor id="news" className="bg-gray-50 dark:bg-navy/30">
+        <PlaceholderSection
+          title="뉴스 큐레이션"
+          emoji="📰"
+          items={[
+            { label: '국내 경제' }, { label: '미국 시장' },
+            { label: '글로벌 이슈' }, { label: 'AI 기술' },
+          ]}
+        />
       </SectionAnchor>
+
+      <footer className="py-8 text-center text-xs text-gray-400 dark:text-gray-600 border-t border-gray-100 dark:border-white/5">
+        Sstarboard — 데이터는 참고용이며 투자 자문이 아닙니다. © 2026
+      </footer>
     </div>
   )
 }
