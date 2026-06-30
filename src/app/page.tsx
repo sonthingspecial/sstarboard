@@ -1,4 +1,5 @@
 import { SectionAnchor } from '@/components/layout/SectionAnchor'
+import { MacroSection } from '@/components/sections/MacroSection'
 
 export default function Home() {
   return (
@@ -6,8 +7,8 @@ export default function Home() {
       <SectionAnchor id="ai-summary">
         <p className="text-gray-400">AI 요약 섹션 — 구현 예정</p>
       </SectionAnchor>
-      <SectionAnchor id="macro" className="bg-gray-50 dark:bg-white/5">
-        <p className="text-gray-400">거시경제 섹션 — 구현 예정</p>
+      <SectionAnchor id="macro" className="bg-gray-50 dark:bg-navy/50">
+        <MacroSection />
       </SectionAnchor>
       <SectionAnchor id="us-market">
         <p className="text-gray-400">미국 주식 섹션 — 구현 예정</p>
