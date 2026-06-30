@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+@theme {
+  --color-navy: #0A1F44;
+  --color-navy-light: #1A2D54;
+  --color-navy-dark: #061329;
+  --color-gold: #D4AF37;
+  --color-gold-light: #E8C84A;
+  --color-gold-dark: #B8952B;
+  --color-up: #FF4444;
+  --color-down: #4477FF;
+  --radius-card: 12px;
+}
+
+@variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  :root {
+    --card-bg: #ffffff;
+    --border-color: #e5e7eb;
+  }
+  .dark {
+    --card-bg: #1A2D54;
+    --border-color: #2a3f6f;
+  }
+  body {
+    font-variant-numeric: tabular-nums;
+    background-color: #f9fafb;
+    color: #111827;
+  }
+  .dark body {
+    background-color: #0A1F44;
+    color: #f3f4f6;
+  }
+}
