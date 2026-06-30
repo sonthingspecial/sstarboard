@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sstarboard
 
-## Getting Started
+한국 개인 투자자를 위한 금융 종합 대시보드.
 
-First, run the development server:
+## 제공 데이터 (1단계 MVP)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+| 섹션 | 데이터 | 출처 |
+|------|--------|------|
+| 거시경제 | VIX, 미국·한국 금리, 원달러 환율 | Yahoo Finance |
+| 미국주식 | SPY, QQQ, CNN 공포탐욕지수, 11개 섹터 점수 | Yahoo Finance, CNN, Google News RSS |
+| AI 시황 | Gemini 1.5 Flash 종합 분석 | Google AI |
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 로컬 실행 방법
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **의존성 설치**
+   ```bash
+   npm install
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. **환경변수 설정**
 
-## Learn More
+   `.env.local.example`을 복사해 `.env.local` 파일을 만들고 API 키를 입력합니다.
+   ```bash
+   cp .env.local.example .env.local
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+   | 변수 | 설명 | 발급 |
+   |------|------|------|
+   | `GEMINI_API_KEY` | Google Gemini AI API 키 (필수) | [Google AI Studio](https://aistudio.google.com/app/apikey) |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. **개발 서버 시작**
+   ```bash
+   npm run dev
+   ```
+   http://localhost:3000 에서 확인
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+4. **테스트 실행**
+   ```bash
+   npm test
+   ```
 
-## Deploy on Vercel
+## Vercel 배포
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Vercel에 GitHub 레포를 연결합니다.
+2. Vercel 대시보드 → Settings → Environment Variables에 `GEMINI_API_KEY`를 추가합니다.
+3. 배포 후 자동으로 서버사이드 API Routes가 활성화됩니다.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 보안 주의사항
+
+- `GEMINI_API_KEY`는 서버사이드에서만 사용됩니다 (`NEXT_PUBLIC_` 접두사 없음).
+- 모든 외부 API 호출은 `/app/api/` 라우트를 통해 서버에서 이루어집니다.
