@@ -27,7 +27,7 @@ export interface NewsItem {
 export interface SectorNewsResponse {
   sector: SectorId
   items: NewsItem[]
-  sentimentScore: number
+  sentimentScore: number | undefined
   source: 'live' | 'fallback'
 }
 
