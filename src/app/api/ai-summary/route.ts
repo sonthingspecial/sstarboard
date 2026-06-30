@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
     const result = await model.generateContent(buildPrompt(macro, market))
     const text = result.response.text()
     const parsed = parseResponse(text)
-    if (!parsed) return NextResponse.json({ error: '분석을 생성할 수 없습니다. 다시 시도해주세요.' })
+    if (!parsed) return NextResponse.json({ error: '분석을 생성할 수 없습니다. 다시 시도해주세요.' }, { status: 500 })
     return NextResponse.json(parsed)
   } catch (err) {
     console.error('[api/ai-summary]', err)
