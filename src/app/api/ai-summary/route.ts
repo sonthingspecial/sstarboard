@@ -4,6 +4,25 @@ import type { MacroData, UsMarketData, AiSummaryResult } from '@/lib/types'
 
 export const dynamic = 'force-dynamic'
 
+// In-memory rate limiter: 1분에 IP당 최대 3회
+// Vercel 서버리스 환경에서는 인스턴스 재시작 시 초기화되므로 1차 방어선 역할만 함.
+// 완전한 방지가 필요하면 Redis/KV 기반 외부 저장소가 필요함.
+const RATE_LIMIT = 3
+const WINDOW_MS = 60_000
+const ipMap = new Map<string, { count: number; windowStart: number }>()
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now()
+  const entry = ipMap.get(ip)
+  if (!entry || now - entry.windowStart > WINDOW_MS) {
+    ipMap.set(ip, { count: 1, windowStart: now })
+    return true
+  }
+  if (entry.count >= RATE_LIMIT) return false
+  entry.count++
+  return true
+}
+
 function buildPrompt(macro: MacroData, market: UsMarketData): string {
   const lines: string[] = ['다음은 오늘 기준 투자 시장 데이터입니다.', '', '[거시경제 데이터]']
 
@@ -50,6 +69,11 @@ function parseResponse(text: string): AiSummaryResult | null {
 }
 
 export async function POST(req: NextRequest) {
+  const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown'
+  if (!checkRateLimit(ip)) {
+    return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+  }
+
   const apiKey = process.env.GEMINI_API_KEY
   if (!apiKey) return NextResponse.json({ error: 'API 키가 설정되지 않았습니다.' }, { status: 500 })
 
