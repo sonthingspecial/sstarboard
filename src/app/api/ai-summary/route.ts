@@ -64,14 +64,16 @@ export async function POST(req: NextRequest) {
 
   try {
     const genAI = new GoogleGenerativeAI(apiKey)
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
+    const model = genAI.getGenerativeModel({ model: 'gemini-3.1-flash-lite' })
     const result = await model.generateContent(buildPrompt(macro, market))
     const text = result.response.text()
     const parsed = parseResponse(text)
     if (!parsed) return NextResponse.json({ error: '분석을 생성할 수 없습니다. 다시 시도해주세요.' }, { status: 500 })
     return NextResponse.json(parsed)
   } catch (err) {
-    console.error('[api/ai-summary]', err)
+    const message = err instanceof Error ? err.message : String(err)
+    const status = (err as Record<string, unknown>)?.status ?? 'unknown'
+    console.error(`[api/ai-summary] status=${status} message=${message}`)
     return NextResponse.json({ error: '분석을 생성할 수 없습니다. 다시 시도해주세요.' }, { status: 500 })
   }
 }
