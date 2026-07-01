@@ -5,7 +5,7 @@ import { vixScore } from './vixScore'
 import { exchangeRateScore } from './exchangeRateScore'
 import { interestRateScore } from './interestRateScore'
 import { newsScore } from './newsScore'
-import { generateRationale } from './rationale'
+import { generateRationale, type RationaleRawData } from './rationale'
 
 function getRecommendation(total: number): Recommendation {
   if (total >= 75) return { key: 'strong-buy', labelKo: '강력 매수', color: 'green', emoji: '🟢' }
@@ -31,9 +31,10 @@ export function computeAllSectors(
     const nScore = newsData.sentimentScore ?? newsScore(newsData.items)
     const total = fgScore + vScore + exRate + irScore + nScore
     const score: SectorScoreBreakdown = { fearGreed: fgScore, vix: vScore, exchangeRate: exRate, interestRate: irScore, news: nScore, total }
+    const rawData: RationaleRawData = { fearGreedScore: fearGreedData.score, vix: marketData.vix, usdKrw: fxData.usdKrw, fedRate: rateData.fedRate }
     return {
       id, nameKo: def.nameKo, nameEn: def.nameEn, etf: def.etf, icon: def.icon, topStocks: def.topStocks,
-      score, recommendation: getRecommendation(total), rationale: generateRationale(score),
+      score, recommendation: getRecommendation(total), rationale: generateRationale(score, rawData),
       news: newsData.items.slice(0, 3), updatedAt: new Date().toISOString(),
     }
   }).sort((a, b) => b.score.total - a.score.total)

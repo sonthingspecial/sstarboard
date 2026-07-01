@@ -83,14 +83,37 @@ export function SectorCard({ sector, isEstimated }: SectorCardProps) {
         점수 산정 근거
       </button>
       {expanded && (
-        <ul className="mt-3 space-y-2">
-          {sector.rationale.map((item, i) => (
-            <li key={i} className="flex gap-2">
-              <span className={`text-xs font-medium w-28 shrink-0 ${SENTIMENT_COLORS[item.sentiment]}`}>{item.factor}</span>
-              <span className="text-xs text-gray-600 dark:text-gray-300">{item.text}</span>
-            </li>
-          ))}
-        </ul>
+        <div className="mt-3 space-y-4">
+          <ul className="space-y-2">
+            {sector.rationale.map((item, i) => (
+              <li key={i} className="flex gap-2">
+                <span className={`text-xs font-medium w-28 shrink-0 ${SENTIMENT_COLORS[item.sentiment]}`}>{item.factor}</span>
+                <span className="text-xs text-gray-600 dark:text-gray-300">{item.text}</span>
+              </li>
+            ))}
+          </ul>
+
+          {sector.news.length > 0 && (
+            <div>
+              <p className="text-xs font-medium text-gray-400 dark:text-gray-500 mb-1.5">관련 뉴스</p>
+              <ul className="space-y-1.5">
+                {sector.news.map((item, i) => (
+                  <li key={i} className="flex items-start gap-1.5">
+                    <span className={`mt-0.5 shrink-0 text-xs ${SENTIMENT_COLORS[item.sentiment]}`}>●</span>
+                    <a
+                      href={item.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-gray-600 dark:text-gray-300 hover:text-gold dark:hover:text-gold transition-colors leading-snug"
+                    >
+                      {item.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
       )}
     </div>
   )
