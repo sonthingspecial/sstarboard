@@ -128,3 +128,11 @@ export interface AiSummaryResult {
   rationale2: string
   rationale3: string
 }
+
+// KR stock display types
+export interface KrStockData {
+  kospi: { value: number; changePercent: number } | null
+  kosdaq: { value: number; changePercent: number } | null
+  timestamp: string
+  source: 'live' | 'partial' | 'error'
+}
