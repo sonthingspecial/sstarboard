@@ -1,0 +1,12 @@
+import useSWR from 'swr'
+import type { KrStockData } from '@/lib/types'
+
+const fetcher = (url: string) => fetch(url).then((r) => r.json())
+
+export function useKrStockData() {
+  const { data, error, isLoading } = useSWR<KrStockData>('/api/kr-stock', fetcher, {
+    refreshInterval: 120_000,
+    revalidateOnFocus: false,
+  })
+  return { data, error, isLoading }
+}
