@@ -72,7 +72,7 @@ export function UsMarketSection() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {(data?.sectors ?? []).map((sector) => (
-            <SectorCard key={sector.id} sector={sector} />
+            <SectorCard key={sector.id} sector={sector} isEstimated={data?.sectorScoresEstimated} />
           ))}
         </div>
       )}

@@ -30,9 +30,10 @@ const SENTIMENT_COLORS: Record<string, string> = {
 
 interface SectorCardProps {
   sector: SectorAnalysis
+  isEstimated?: boolean
 }
 
-export function SectorCard({ sector }: SectorCardProps) {
+export function SectorCard({ sector, isEstimated }: SectorCardProps) {
   const [expanded, setExpanded] = useState(false)
   const Icon = ICON_MAP[sector.icon] ?? Cpu
   const badgeStyle = BADGE_STYLES[sector.recommendation.color] ?? BADGE_STYLES.orange
@@ -49,9 +50,16 @@ export function SectorCard({ sector }: SectorCardProps) {
             <p className="text-xs text-gray-400">{sector.etf}</p>
           </div>
         </div>
-        <span className={`text-xs font-semibold px-2 py-1 rounded-full ${badgeStyle}`}>
-          {sector.recommendation.emoji} {sector.recommendation.labelKo}
-        </span>
+        <div className="flex flex-col items-end gap-1">
+          <span className={`text-xs font-semibold px-2 py-1 rounded-full ${badgeStyle}`}>
+            {sector.recommendation.emoji} {sector.recommendation.labelKo}
+          </span>
+          {isEstimated && (
+            <span className="text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-1.5 py-0.5 rounded">
+              추정값
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Score bar */}

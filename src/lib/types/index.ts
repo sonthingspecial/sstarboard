@@ -117,6 +117,7 @@ export interface UsMarketData {
   qqq: { price: number; changePercent: number } | null
   fearGreed: { score: number; rating: string } | null
   sectors: SectorAnalysis[]
+  sectorScoresEstimated: boolean
   timestamp: string
 }
 

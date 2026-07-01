@@ -130,6 +130,7 @@ export async function GET() {
     qqq,
     fearGreed: fgRaw ? { score: fgRaw.score, rating: fgRaw.rating } : null,
     sectors,
+    sectorScoresEstimated: !fgRaw || !vixRaw || !krwRaw || !irxRaw,
     timestamp: new Date().toISOString(),
   }
 
