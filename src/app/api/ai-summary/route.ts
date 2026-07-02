@@ -11,6 +11,22 @@ const RATE_LIMIT = 3
 const WINDOW_MS = 60_000
 const ipMap = new Map<string, { count: number; windowStart: number }>()
 
+function getClientIp(req: NextRequest): string {
+  const realIp = req.headers.get('x-real-ip')
+  if (realIp) return realIp.trim()
+
+  const vercelForwardedFor = req.headers.get('x-vercel-forwarded-for')
+  if (vercelForwardedFor) return vercelForwardedFor.split(',')[0].trim()
+
+  const forwardedFor = req.headers.get('x-forwarded-for')
+  if (forwardedFor) {
+    const ips = forwardedFor.split(',').map((s) => s.trim())
+    return ips[ips.length - 1]
+  }
+
+  return 'unknown'
+}
+
 function checkRateLimit(ip: string): boolean {
   const now = Date.now()
   const entry = ipMap.get(ip)
@@ -59,6 +75,40 @@ function buildPrompt(macro: MacroData, market: UsMarketData): string {
   return lines.join('\n')
 }
 
+function isMacroIndicator(v: unknown): v is { value: number | null; change: number | null; changePercent: number | null } {
+  if (typeof v !== 'object' || v === null) return false
+  const o = v as Record<string, unknown>
+  const isNumOrNull = (x: unknown) => typeof x === 'number' || x === null
+  return isNumOrNull(o.value) && isNumOrNull(o.change) && isNumOrNull(o.changePercent)
+}
+
+function isPriceChange(v: unknown): v is { price: number; changePercent: number } {
+  if (typeof v !== 'object' || v === null) return false
+  const o = v as Record<string, unknown>
+  return typeof o.price === 'number' && typeof o.changePercent === 'number'
+}
+
+function validateSummaryInput(body: unknown): body is { macroData: MacroData; usMarketData: UsMarketData } {
+  if (typeof body !== 'object' || body === null) return false
+  const b = body as Record<string, unknown>
+
+  const macro = b.macroData
+  if (typeof macro !== 'object' || macro === null) return false
+  const m = macro as Record<string, unknown>
+  if (!isMacroIndicator(m.vix) || !isMacroIndicator(m.usFedRate) || !isMacroIndicator(m.usdKrw) || !isMacroIndicator(m.krRate)) {
+    return false
+  }
+
+  const market = b.usMarketData
+  if (typeof market !== 'object' || market === null) return false
+  const mk = market as Record<string, unknown>
+  if (mk.spy !== null && !isPriceChange(mk.spy)) return false
+  if (mk.qqq !== null && !isPriceChange(mk.qqq)) return false
+  if (!Array.isArray(mk.sectors) || mk.sectors.length > 20) return false
+
+  return true
+}
+
 function parseResponse(text: string): AiSummaryResult | null {
   const conclusion = text.match(/결론:\s*(.+)/)?.[1]?.trim()
   const r1 = text.match(/근거\s*1:\s*(.+)/)?.[1]?.trim()
@@ -69,7 +119,7 @@ function parseResponse(text: string): AiSummaryResult | null {
 }
 
 export async function POST(req: NextRequest) {
-  const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown'
+  const ip = getClientIp(req)
   if (!checkRateLimit(ip)) {
     return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
   }
@@ -80,6 +130,9 @@ export async function POST(req: NextRequest) {
   let macro: MacroData, market: UsMarketData
   try {
     const body = await req.json()
+    if (!validateSummaryInput(body)) {
+      return NextResponse.json({ error: '요청 데이터 형식이 올바르지 않습니다.' }, { status: 400 })
+    }
     macro = body.macroData
     market = body.usMarketData
   } catch {
