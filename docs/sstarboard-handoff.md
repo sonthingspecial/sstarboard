@@ -19,7 +19,7 @@
 
 | 항목 | 선택 |
 |------|------|
-| 프레임워크 | Next.js 14 (App Router) |
+| 프레임워크 | Next.js 16 (App Router) |
 | 스타일 | Tailwind CSS v4 (config 파일 없음, `globals.css`의 `@theme {}` 블록으로 커스텀 색상 정의) |
 | 다크 모드 | `next-themes` — `attribute="class"`, `defaultTheme="light"`, `enableSystem={false}` |
 | 데이터 페칭 | SWR (`revalidateOnFocus: false`) |
