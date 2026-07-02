@@ -4,6 +4,7 @@ import { SectionAnchor } from '@/components/layout/SectionAnchor'
 import { AiSummarySection } from '@/components/sections/AiSummarySection'
 import { MacroSection } from '@/components/sections/MacroSection'
 import { UsMarketSection } from '@/components/sections/UsMarketSection'
+import { KrStockSection } from '@/components/sections/KrStockSection'
 import { PlaceholderSection } from '@/components/sections/PlaceholderSection'
 import { useMacroData } from '@/hooks/useMacroData'
 import { useUsMarket } from '@/hooks/useUsMarket'
@@ -38,14 +39,7 @@ export default function Home() {
       </SectionAnchor>
 
       <SectionAnchor id="kr-stock" className="bg-gray-50 dark:bg-navy/30">
-        <PlaceholderSection
-          title="한국주식"
-          emoji="🇰🇷"
-          items={[
-            { label: 'KOSPI' }, { label: 'KOSDAQ' },
-            { label: '섹터별 순위' }, { label: '외국인 수급' },
-          ]}
-        />
+        <KrStockSection />
       </SectionAnchor>
 
       <SectionAnchor id="alternative" className="bg-white dark:bg-navy/50">
