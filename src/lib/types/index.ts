@@ -136,3 +136,24 @@ export interface KrStockData {
   timestamp: string
   source: 'live' | 'partial' | 'error'
 }
+
+// Real estate subscription (청약) display types
+export interface SubscriptionListing {
+  id: string
+  name: string
+  region: string
+  district: string
+  type: 'public' | 'private' | 'publicRental' | 'privateRental'
+  brand: string | null
+  minPrice: number | null
+  maxPrice: number | null
+  applyStartDate: string
+  applyEndDate: string
+  detailUrl: string
+}
+
+export interface SubscriptionData {
+  listings: SubscriptionListing[]
+  timestamp: string
+  source: 'live' | 'error'
+}

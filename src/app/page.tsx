@@ -6,6 +6,7 @@ import { MacroSection } from '@/components/sections/MacroSection'
 import { UsMarketSection } from '@/components/sections/UsMarketSection'
 import { KrStockSection } from '@/components/sections/KrStockSection'
 import { PlaceholderSection } from '@/components/sections/PlaceholderSection'
+import { RealEstateSection } from '@/components/sections/RealEstateSection'
 import { useMacroData } from '@/hooks/useMacroData'
 import { useUsMarket } from '@/hooks/useUsMarket'
 
@@ -28,14 +29,7 @@ export default function Home() {
       </SectionAnchor>
 
       <SectionAnchor id="real-estate" className="bg-white dark:bg-navy/50">
-        <PlaceholderSection
-          title="부동산"
-          emoji="🏠"
-          items={[
-            { label: '청약 정보' }, { label: '전세가율' },
-            { label: '미분양 현황' }, { label: '경매 지수' },
-          ]}
-        />
+        <RealEstateSection />
       </SectionAnchor>
 
       <SectionAnchor id="kr-stock" className="bg-gray-50 dark:bg-navy/30">
