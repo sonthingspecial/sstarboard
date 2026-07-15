@@ -6,6 +6,7 @@ import { MacroSection } from '@/components/sections/MacroSection'
 import { UsMarketSection } from '@/components/sections/UsMarketSection'
 import { KrStockSection } from '@/components/sections/KrStockSection'
 import { PlaceholderSection } from '@/components/sections/PlaceholderSection'
+import { AlternativeSection } from '@/components/sections/AlternativeSection'
 import { RealEstateSection } from '@/components/sections/RealEstateSection'
 import { useMacroData } from '@/hooks/useMacroData'
 import { useUsMarket } from '@/hooks/useUsMarket'
@@ -37,14 +38,7 @@ export default function Home() {
       </SectionAnchor>
 
       <SectionAnchor id="alternative" className="bg-white dark:bg-navy/50">
-        <PlaceholderSection
-          title="대안투자"
-          emoji="💎"
-          items={[
-            { label: '금 가격' }, { label: '비트코인' },
-            { label: '원자재' }, { label: '환율 DXY' },
-          ]}
-        />
+        <AlternativeSection />
       </SectionAnchor>
 
       <SectionAnchor id="news" className="bg-gray-50 dark:bg-navy/30">

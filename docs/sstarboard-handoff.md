@@ -73,6 +73,7 @@ src/
 │       ├── macro/route.ts        # GET — VIX, 미금리, 원달러, 한국금리
 │       ├── us-market/route.ts    # GET — SPY/QQQ, Fear&Greed, 11개 섹터 점수
 │       ├── kr-stock/route.ts     # GET — KOSPI/KOSDAQ
+│       ├── alternative/route.ts  # GET — 금/비트코인/원자재/DXY
 │       └── ai-summary/route.ts   # POST — Gemini AI 시황 분석
 ├── components/
 │   ├── layout/
@@ -83,6 +84,7 @@ src/
 │   │   ├── MacroSection.tsx      # 거시경제 4개 카드
 │   │   ├── UsMarketSection.tsx   # SPY/QQQ/FG + 11개 섹터 그리드
 │   │   ├── KrStockSection.tsx    # KOSPI/KOSDAQ 카드 + 섹터순위·외국인수급 안내
+│   │   ├── AlternativeSection.tsx# 금/비트코인/원자재/DXY 카드 그리드
 │   │   └── PlaceholderSection.tsx# "곧 추가됩니다" 섹션 템플릿
 │   └── ui/
 │       ├── MacroCard.tsx         # 지표 카드 (값/변화율, 에러 처리, InfoModal)
@@ -92,7 +94,8 @@ src/
 ├── hooks/
 │   ├── useMacroData.ts           # SWR — /api/macro, 60초 갱신
 │   ├── useUsMarket.ts            # SWR — /api/us-market, 120초 갱신
-│   └── useKrStockData.ts         # SWR — /api/kr-stock, 120초 갱신
+│   ├── useKrStockData.ts         # SWR — /api/kr-stock, 120초 갱신
+│   └── useAlternative.ts         # SWR — /api/alternative, 60초 갱신
 └── lib/
     ├── types/index.ts            # 모든 공유 타입
     ├── constants/
@@ -153,6 +156,18 @@ Yahoo Finance에서 KOSPI/KOSDAQ을 `Promise.allSettled`로 병렬 조회.
 응답 타입 `KrStockData.source`: `'live'` | `'partial'` | `'error'`. 섹터별 순위·외국인 수급은
 KRX Data Marketplace 가입 필요로 이번 범위 제외 (섹션 내 "곧 추가됩니다" 안내).
 
+### `GET /api/alternative`
+Yahoo Finance에서 4개 자산을 `Promise.allSettled`로 병렬 조회. DXY는 `DX-Y.NYB` 실패 시 `DX=F`로 서버단 폴백 재시도.
+
+| 자산 | 티커 | 단위 |
+|------|------|------|
+| 금 | `GC=F` | USD/oz |
+| 비트코인 | `BTC-USD` | USD |
+| 원자재 (WTI 원유) | `CL=F` | USD/bbl |
+| 달러인덱스 (DXY) | `DX-Y.NYB` (폴백 `DX=F`) | Index |
+
+응답 타입 `AlternativeData` — 자산별 `AlternativeAsset.source`: `'live'` | `'error'` (자산 단위로 개별 판정, 전체 실패로 확산되지 않음).
+
 ### `POST /api/ai-summary`
 요청 body: `{ macroData: MacroData, usMarketData: UsMarketData }`
 
@@ -179,7 +194,7 @@ Gemini 1.5 Flash 호출 → 결론 + 근거 3개 파싱.
 | 미국 주식 | ✅ 완료 | SPY/QQQ, Fear&Greed, 11개 섹터 |
 | 부동산 | ⏳ 플레이스홀더 | 청약/전세가율/미분양/경매 |
 | 한국 주식 | ✅ 완료 (KOSPI/KOSDAQ) | 섹터순위/외국인수급은 KRX 가입 필요로 제외, 안내만 표시 |
-| 대안투자 | ⏳ 플레이스홀더 | 금/비트코인/원자재/DXY |
+| 대안투자 | ✅ 완료 | 금(GC=F)/비트코인(BTC-USD)/원자재(CL=F, WTI)/DXY(DX-Y.NYB, 폴백 DX=F) |
 | 뉴스 큐레이션 | ⏳ 플레이스홀더 | 국내경제/미국시장/글로벌/AI |
 
 ---
@@ -228,11 +243,6 @@ npm run build
 ## 다음 작업 후보
 
 플레이스홀더 섹션 중 우선순위가 높은 것부터 구현:
-
-### 1단계 — 대안투자 (`#alternative`)
-- 금: `GC=F` (Yahoo)
-- 비트코인: `BTC-USD` (Yahoo)
-- DXY: `DX-Y.NYB` (Yahoo)
 
 ### 2단계 — 뉴스 큐레이션 (`#news`)
 - 현재 섹터별 뉴스를 섹터 카드 내에만 표시 중

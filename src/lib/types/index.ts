@@ -157,3 +157,18 @@ export interface SubscriptionData {
   timestamp: string
   source: 'live' | 'error'
 }
+
+// Alternative investment (금/비트코인/원자재/DXY) display types
+export interface AlternativeAsset {
+  symbol: string
+  name: string
+  price: number | null
+  changePercent: number | null
+  unit: string
+  source: 'live' | 'error'
+}
+
+export interface AlternativeData {
+  assets: AlternativeAsset[]
+  timestamp: string
+}
